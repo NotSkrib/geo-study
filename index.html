@@ -1,8 +1,8 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Geo-Study</title>
+    <title>Google Classroom</title>
+    <link rel="icon" type="image/x-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Google_Classroom_Logo.svg/512px-Google_Classroom_Logo.svg.png?20221017163738">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -93,65 +93,128 @@
             border-bottom: 3px solid rgba(255,255,255,0.3);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
+        
+        /* === CSS FOR KEYBIND INPUTS === */
+        .keybind-container {
+            display: flex;
+            flex-wrap: wrap; /* Allows wrapping on small screens */
+            align-items: center;
+            gap: 10px;
+            margin: -10px auto 20px auto; /* Center it */
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2); /* Dark background */
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px; /* Match your search bar */
+        }
+        .keybind-container label {
+            color: white;
+            font-weight: 500;
+        }
+        .keybind-container select,
+        .keybind-container input[type="text"] {
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+            color: #333;
+        }
+        .keybind-container input[type="text"] {
+            flex: 1; /* Make the URL input take up remaining space */
+            min-width: 150px; /* Ensure it's not too small */
+        }
+        .keybind-container button {
+            background: rgb(89, 134, 218); /* Match your other buttons */
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+        .keybind-container button:hover {
+            background: #79aadb; /* Match your hover effect */
+        }
+        #keybind-status {
+            color: #a0a0a0; /* Light gray color */
+            font-size: 14px;
+            font-weight: bold;
+            margin: 0;
+            padding-left: 10px;
+        }
     </style>
 </head>
 <body>
+    
     <div class="sidebar" id="sidebar"></div>
+    
     <div class="main-content">
         <h1>UGS Files</h1>
         <input type="text" id="searchBar" placeholder="Search games...">
+
+
+
+
+
+
+
+
+        <div class="keybind-container">
+            <label for="url-input">URL:</label>
+            <input type="text" id="url-input" placeholder="Enter URL (https://example.com)">
+            <button onclick="openURLBlank()">Open in about:blank</button>
+        </div>
+        
         <div id="sections-container"></div>
     </div>
-<!-- === Minecraft Server Button === -->
-<div style="text-align:center; margin:20px;">
-  <button onclick="openEaglercraft()" 
-          style="background:#4a90e2;color:white;font-weight:bold;border:none;
-                 padding:12px 20px;border-radius:8px;cursor:pointer;">
-    Minecraft Server
-  </button>
-</div>
+        
+    <div style="text-align:center; margin:20px;">
+      <button onclick="openEaglercraft()" 
+              style="background:#4a90e2;color:white;font-weight:bold;border:none;
+                     padding:12px 20px;border-radius:8px;cursor:pointer;">
+        Minecraft Server
+      </button>
 
 
-<script>
-async function openEaglercraft() {
-  const FILE_URL = "https://cdn.jsdelivr.net/gh/PlanetDogeCodes/Eagletcraft-1.12@main/source%20file/egc1-12.xml";
-  try {
-    const res = await fetch(FILE_URL);
-    if (!res.ok) throw new Error('Network error');
-    const text = await res.text();
 
 
-    const win = window.open("about:blank", "_blank");
-    if (!win) { 
-      alert("Popup blocked — please allow popups for this site."); 
-      return; 
-    }
+      <button onclick="openChessPlayer()" 
+              style="background:#22c55e;color:white;font-weight:bold;border:none;
+                     padding:12px 20px;border-radius:8px;cursor:pointer;margin-left:12px;">
+        Chess Player
+      </button>
+      <button onclick="openquakePlayer()" 
+              style="background:#22c55e;color:white;font-weight:bold;border:none;
+                     padding:12px 20px;border-radius:8px;cursor:pointer;margin-left:12px;">
+        Quake Player
+      </button>
+    </div>
 
 
-    win.document.open();
-    win.document.write(`
-      <!doctype html>
-      <html>
-        <head><meta charset="utf-8"><title></title>
-          <style>
-            html, body {height:100%; margin:0; background:#000;}
-          </style>
-        </head>
-        <body>
-          <iframe srcdoc="${text.replace(/"/g,'&quot;').replace(/`/g,'&#96;')}"
-                  style="border:none; width:100%; height:100vh;"></iframe>
-        </body>
-      </html>
-    `);
-    win.document.close();
-  } catch (err) {
-    console.error(err);
-    alert("Failed to load Minecraft client (network/CORS or popup blocked).");
-  }
-}
-</script>
+
+
+
+
+
+
     <script>
         const files = [
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             'cl1',
@@ -1833,102 +1896,50 @@ async function openEaglercraft() {
         ];
 
 
-        // Generate all sections (0-9, A-Z)
-        function generateAllSections() {
-            const allChars = ['0','1','2','3','4','5','6','7','8','9',
-                            'A','B','C','D','E','F','G','H','I','J','K','L','M',
-                            'N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-           
-            // Group files by first character after "cl"
-            const filesByChar = {};
-            allChars.forEach(char => {
-                filesByChar[char] = [];
-            });
 
 
-            files.forEach(file => {
-                const lower = file.toLowerCase();
-                if (lower.startsWith('cl')) {
-                    const afterCl = lower.substring(2);
-                    if (afterCl.length > 0) {
-                        const firstChar = afterCl[0].toUpperCase();
-                        if (filesByChar[firstChar]) {
-                            filesByChar[firstChar].push(file);
-                        }
-                    }
-                }
-            });
 
 
-            // Create sections
-            const container = document.getElementById('sections-container');
-            allChars.forEach(char => {
-                const section = document.createElement('div');
-                section.className = 'letter-section';
-                section.id = `section-${char}`;
-               
-                const header = document.createElement('div');
-                header.className = 'letter-header';
-                header.textContent = char;
-                section.appendChild(header);
 
 
-                const buttonsContainer = document.createElement('div');
-                buttonsContainer.className = 'buttons-container';
-
-
-                if (filesByChar[char].length > 0) {
-                    filesByChar[char].forEach(file => {
-                        const btn = document.createElement('input');
-                        btn.type = 'button';
-                        btn.value = file;
-                        btn.onclick = () => {
-                            fetch(`https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile/${file}.html?t=${Date.now()}`)
-                                .then(response => response.text())
-                                .then(text => {
-                                    const newWin = window.open("about:blank", "_blank");
-                                    if (newWin) {
-                                        newWin.document.open();
-                                        newWin.document.write(text);
-                                        newWin.document.close();
-                                    }
-                                });
-                        };
-                        btn.style.width = '100%';
-                        btn.style.height = '100%';
-                        btn.style.fontSize = '100';
-                        buttonsContainer.appendChild(btn);
-                    });
-                } else {
-                    section.classList.add('empty');
-                    const emptyMsg = document.createElement('div');
-                    emptyMsg.className = 'empty-message';
-                    emptyMsg.textContent = 'No files';
-                    buttonsContainer.appendChild(emptyMsg);
-                }
-
-
-                section.appendChild(buttonsContainer);
-                container.appendChild(section);
-            });
-
-
-            // Generate sidebar
-            generateSidebar(allChars, filesByChar);
+        // --- 1. Clean up file names for display ---
+        function cleanName(file) {
+            return file
+                .replace(/^cl/i, '')
+                .replace(/^Eaglercraft[-_ ]?/i, '')
+                .replace(/^polytrackbutnotflagged/i, 'Polytrack')
+                .replace(/[-_]/g, ' ')
+                .trim()
+                .replace(/\b\w/g, char => char.toUpperCase()); // Capitalize first letter
         }
 
 
-        function generateSidebar(allChars, filesByChar) {
+
+
+
+
+
+
+        // --- 2. Generate Sidebar Navigation ---
+        function generateSidebar(groupedFiles) {
             const sidebar = document.getElementById('sidebar');
-           
+            sidebar.innerHTML = ''; // Clear previous content
+
+
+
+
+
+
+
+
+            const allChars = Object.keys(groupedFiles).sort();
+            
             allChars.forEach(char => {
                 const btn = document.createElement('button');
                 btn.className = 'sidebar-btn';
                 btn.textContent = char;
-               
-                if (filesByChar[char].length === 0) {
-                    btn.classList.add('empty');
-                } else {
+                
+                if (groupedFiles[char].length > 0) {
                     btn.onclick = () => {
                         const section = document.getElementById(`section-${char}`);
                         if (section) {
@@ -1936,70 +1947,122 @@ async function openEaglercraft() {
                         }
                     };
                 }
-               
                 sidebar.appendChild(btn);
             });
         }
 
 
-       
-        function cleanName(file) {
-            return file
-                .replace(/^cl/i, '')
-                .replace(/^Eaglercraft[-_ ]?/i, '')
-                .replace(/^polytrackbutnotflagged/i, 'Polytrack')
-                .replace(/[-_]/g, ' ')
-                .trim();
-        }
 
 
+
+
+
+
+        // --- 3. Generate Main Content Sections and Buttons ---
         function generateAllSections() {
             const container = document.getElementById('sections-container');
             container.innerHTML = '';
             const grouped = {};
+            const allChars = ['0','1','2','3','4','5','6','7','8','9',
+                              'A','B','C','D','E','F','G','H','I','J','K','L','M',
+                              'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+                              '#']; // Add '#' for non-standard files
+
+
+
+
+
+
+
+
+            allChars.forEach(char => grouped[char] = []); // Initialize all groups
+
+
+
+
+
+
 
 
             files.forEach(file => {
                 const name = cleanName(file);
                 const first = name.charAt(0).toUpperCase();
-                if (!grouped[first]) grouped[first] = [];
-                grouped[first].push({ file, name });
+                let groupKey = '#'; // Default
+                if (grouped[first]) {
+                    groupKey = first;
+                }
+                grouped[groupKey].push({ file, name });
             });
 
 
+
+
+
+
+
+
+            // Generate the main content
             Object.keys(grouped).sort().forEach(letter => {
-                const section = document.createElement('div');
-                const header = document.createElement('div');
-                header.className = 'letter-header';
-                header.textContent = letter;
-                section.appendChild(header);
-                grouped[letter].forEach(({ file, name }) => {
-                    const btn = document.createElement('input');
-                    btn.type = 'button';
-                    btn.value = name;
-                    btn.onclick = () => {
-                        fetch(`https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile/${file}.html?t=${Date.now()}`)
-                            .then(r => r.text())
-                            .then(text => {
-                                const newWin = window.open("about:blank", "_blank");
-                                newWin.document.write(text);
-                                newWin.document.close();
-                            });
-                    };
-                    section.appendChild(btn);
-                });
-                container.appendChild(section);
+                if (grouped[letter].length > 0) {
+                    const section = document.createElement('div');
+                    section.id = `section-${letter}`; // Set ID for scrolling
+                    
+                    const header = document.createElement('div');
+                    header.className = 'letter-header';
+                    header.textContent = letter;
+                    section.appendChild(header);
+                    
+                    grouped[letter].forEach(({ file, name }) => {
+                        const btn = document.createElement('input');
+                        btn.type = 'button';
+                        btn.value = name; // Use the clean name
+                        
+                        btn.onclick = () => {
+                            fetch(`https://cdn.jsdelivr.net/gh/bubbls/ugs-singlefile/${file}.html?t=${Date.now()}`)
+                                .then(r => r.text())
+                                .then(text => {
+                                    const newWin = window.open("about:blank", "_blank");
+                                    if (newWin) {
+                                        newWin.document.open();
+                                        newWin.document.write(text);
+                                        newWin.document.close();
+                                    } else {
+                                        alert("Popup blocked. Please allow popups.");
+                                    }
+                                })
+                                .catch(error => console.error('Error fetching file:', error));
+                        };
+                        section.appendChild(btn);
+                    });
+                    container.appendChild(section);
+                }
             });
+
+
+
+
+
+
+
+
+            // Generate the sidebar
+            generateSidebar(grouped);
         }
 
 
-        // Search filter
+
+
+        // --- 4. Search Filter Logic ---
         document.addEventListener('input', e => {
             if (e.target.id === 'searchBar') {
                 const search = e.target.value.toLowerCase();
-                document.querySelectorAll('input[type="button"]').forEach(btn => {
+                
+                document.querySelectorAll('#sections-container input[type="button"]').forEach(btn => {
                     btn.style.display = btn.value.toLowerCase().includes(search) ? '' : 'none';
                 });
+
+
+
                 document.querySelectorAll('.letter-header').forEach(header => {
                     const section = header.parentElement;
                     const visible = [...section.querySelectorAll('input[type="button"]')].some(b => b.style.display !== 'none');
@@ -2009,8 +2072,127 @@ async function openEaglercraft() {
         });
 
 
-        window.addEventListener('DOMContentLoaded', generateAllSections);
+
+        // --- 5. Eaglercraft Launcher ---
+        async function openEaglercraft() {
+            const FILE_URL = "https://cdn.jsdelivr.net/gh/PlanetDogeCodes/Eagletcraft-1.12@main/source%20file/egc1-12.xml";
+            try {
+                const res = await fetch(FILE_URL);
+                if (!res.ok) throw new Error('Network error');
+                const text = await res.text();
+
+
+
+                const win = window.open("about:blank", "_blank");
+                if (!win) { 
+                    alert("Popup blocked — please allow popups for this site."); 
+                    return; 
+                }
+
+
+
+                win.document.open();
+                win.document.write(`
+                    <!doctype html>
+                    <html>
+                        <head><meta charset="utf-8"><title>Minecraft</title>
+                            <style>html, body {height:100%; margin:0; background:#000;}</style>
+                        </head>
+                        <body>
+                            <iframe srcdoc="${text.replace(/"/g,'&quot;').replace(/`/g,'&#96;')}"
+                                    style="border:none; width:100%; height:100vh;"></iframe>
+                        </body>
+                    </html>
+                `);
+                win.document.close();
+            } catch (err) {
+                console.error(err);
+                alert("Failed to load Minecraft client.");
+            }
+        }
+
+
+
+
+        // --- New: Chess Player launcher (opens the site inside an about:blank window) ---
+        function openChessPlayer() {
+            const url = 'https://www.ishaanpatel.info/Chess/';
+            const win = window.open('about:blank', '_blank');
+            if (!win) {
+                alert("Popup blocked — please allow popups for this site.");
+                return;
+            }
+
+
+
+
+            win.document.open();
+            win.document.write(`
+                <!doctype html>
+                <html>
+                  <head>
+                    <meta charset="utf-8">
+                    <title>Chess Player</title>
+                    <meta name="referrer" content="no-referrer">
+                    <style>html,body{height:100%;margin:0;background:#111}</style>
+                  </head>
+                  <body>
+                    <iframe src="${url}" style="border:none;width:100%;height:100vh;"></iframe>
+                  </body>
+                </html>
+            `);
+            win.document.close();
+        }
+                function openquakePlayer() {
+            const url = 'https://www.netquake.io/';
+            const win = window.open('about:blank', '_blank');
+            if (!win) {
+                alert("Popup blocked — please allow popups for this site.");
+                return;
+            }
+
+
+
+
+            win.document.open();
+            win.document.write(`
+                <!doctype html>
+                <html>
+                  <head>
+                    <meta charset="utf-8">
+                    <title>Quake Player</title>
+                    <meta name="referrer" content="no-referrer">
+                    <style>html,body{height:100%;margin:0;background:#111}</style>
+                  </head>
+                  <body>
+                    <iframe src="${url}" style="border:none;width:100%;height:100vh;"></iframe>
+                  </body>
+                </html>
+            `);
+            win.document.close();
+        }
+
+
+        // --- URL Opener Function ---
+        function openURLBlank() {
+            const url = document.getElementById('url-input').value;
+            if (!url) { alert('Enter URL'); return; }
+            const w = window.open('about:blank', '_blank');
+            if (!w) { alert('Popup blocked'); return; }
+            const html = '<!doctype html><html><head><meta charset="utf-8"><style>html,body{height:100%;margin:0}</style></head><body><iframe src="' + url + '" style="width:100%;height:100vh;border:none;"></iframe></body></html>';
+            w.document.open();
+            w.document.write(html);
+            w.document.close();
+        }
+
+        // --- Run startup functions ---
+        window.addEventListener('DOMContentLoaded', () => {
+            generateAllSections();
+            loadKeybindSettings();
+        });
     </script>
 </body>
 </html>
-     
+
+
+
