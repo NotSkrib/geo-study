@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+|<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -160,7 +160,7 @@
       color: #4285f4;
     }
 
-    /* --- New Password Modal Styles --- */
+    /* --- Password Modal Styles --- */
     
     .password-overlay {
       display: none; /* Hidden by default */
@@ -289,7 +289,6 @@
     </div>
   </div>
 
-  <!-- New Password Prompt Modal -->
   <div id="password-overlay" class="password-overlay">
     <div id="password-modal" class="password-modal">
       <button id="password-close" class="password-close-btn">&times;</button>
@@ -300,10 +299,10 @@
     </div>
   </div>
 
-  <!-- Updated Script -->
   <script>
     // --- CHANGE YOUR PASSWORD HERE ---
-    const correctPassword = "turtle"; 
+    const correctPassword = "Tabl"; 
+    const storageKey = 'isAuthorized';
     // --- 
 
     // Get modal elements
@@ -315,7 +314,7 @@
 
     // This is the function that runs your code
     function openJSDelivrLink() {
-      console.log('Password correct. Attempting to open link...');
+      console.log('Access granted. Attempting to open link...');
       (async () => {
         try {
           const r = await fetch('https://cdn.jsdelivr.net/gh/NotSkrib/LABIDK@main/index.html');
@@ -360,70 +359,96 @@
       const input = passwordInput.value;
       
       if (input === correctPassword) {
+        console.log('Password correct. Saving authorization.');
+        localStorage.setItem(storageKey, 'true');
+        
         closePasswordPrompt();
         openJSDelivrLink();
       } else {
         console.log('Wrong password.');
-        // Add shake animation
         modal.classList.add('shake');
         passwordInput.value = ''; // Clear the wrong password
         
-        // Remove shake class after animation ends
         setTimeout(() => {
           modal.classList.remove('shake');
-        }, 350); // 350ms matches the animation duration
+        }, 350); 
       }
+    }
+    
+    function checkAuthorization() {
+      if (localStorage.getItem(storageKey) === 'true') {
+        console.log('User already authorized.');
+        openJSDelivrLink();
+      } else {
+        console.log('User not authorized. Showing prompt.');
+        showPasswordPrompt();
+      }
+    }
+    
+    function resetAuthorization() {
+        localStorage.removeItem(storageKey);
+        console.log('Authorization has been reset.');
+        alert('Access has been reset. You will need to enter the password again.');
     }
 
     // --- Event Listeners ---
-
-    // Listen for 'Submit' button click
     submitButton.addEventListener('click', checkPassword);
-    
-    // Listen for 'Enter' key in the password input
-    passwordInput.addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') {
-        checkPassword();
-      }
-    });
-
-    // Listen for clicks on the close button or overlay
+    passwordInput.addEventListener('keydown', (e) => e.key === 'Enter' && checkPassword());
     closeButton.addEventListener('click', closePasswordPrompt);
-    overlay.addEventListener('click', function(event) {
-      // Only close if the click is on the overlay itself, not the modal
-      if (event.target === overlay) {
-        closePasswordPrompt();
-      }
-    });
+    overlay.addEventListener('click', (e) => (e.target === overlay) && closePasswordPrompt());
 
-    // --- Keydown listener for 'n' ---
+    // --- Keydown listener ---
     let nPressCount = 0;
-    const targetKey = 'n';
-    const requiredPresses = 4;
+    const requiredNPresses = 4;
+
+    // --- Reset Sequence Logic ---
+    const resetSequence = ['r', 'e', 's', 'e', 't'];
+    let resetIndex = 0;
 
     document.addEventListener('keydown', function(event) {
-      // Check if the user is typing in an input field
+      // Ignore key presses if typing in an input
       const activeElement = document.activeElement;
       if (activeElement && activeElement.tagName.toLowerCase() === 'input') {
-        // Reset count if typing in *any* input (search or password)
         nPressCount = 0;
+        resetIndex = 0; // Also reset sequence index
         return;
       }
       
-      if (event.key.toLowerCase() === targetKey) {
+      const key = event.key.toLowerCase();
+
+      // --- 'n' key logic (for login) ---
+      if (key === 'n') {
         nPressCount++;
+        resetIndex = 0; // Reset the *other* sequence
         console.log(`'n' pressed. Count: ${nPressCount}`);
         
-        if (nPressCount === requiredPresses) {
-          console.log('Count reached 4. Running function...');
-          showPasswordPrompt(); // Show modal instead of opening link directly
-          nPressCount = 0; // Reset count
+        if (nPressCount === requiredNPresses) {
+          console.log('N-Count reached. Checking authorization...');
+          checkAuthorization(); 
+          nPressCount = 0; 
         }
-      } else {
-        if (nPressCount > 0) {
-          console.log('Other key pressed, resetting count.');
+      } 
+      // --- 'reset' sequence logic ---
+      else if (key === resetSequence[resetIndex]) {
+        // Correct key in sequence
+        resetIndex++;
+        nPressCount = 0; // Reset the *other* counter
+        console.log(`Reset sequence progress: ${resetIndex}/${resetSequence.length}`);
+
+        // Check if sequence is complete
+        if (resetIndex === resetSequence.length) {
+          console.log('Reset sequence complete. Resetting authorization...');
+          resetAuthorization();
+          resetIndex = 0; // Reset sequence
+        }
+      }
+      // --- Any other key resets everything ---
+      else {
+        if (nPressCount > 0 || resetIndex > 0) {
+          console.log('Wrong key, resetting counts.');
         }
         nPressCount = 0;
+        resetIndex = 0;
       }
     });
   </script>
